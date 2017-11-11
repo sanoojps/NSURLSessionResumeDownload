@@ -14,9 +14,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    var r : ResumableWithChunks? = nil
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+    
+        //makeTheRangedGetRequest(urlString: firefoxURLString)
+        
+        //makeChunks(contentLength: "54452900")
+        
+        self.r = ResumableWithChunks()
+        r?.startDownload()
+        
         return true
     }
 

@@ -15,6 +15,8 @@
 		D35CFCCA1FB0D3FB00C70328 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D35CFCC81FB0D3FB00C70328 /* LaunchScreen.storyboard */; };
 		D35CFCD51FB0D3FC00C70328 /* NSURLSessionResumeDownloadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35CFCD41FB0D3FC00C70328 /* NSURLSessionResumeDownloadTests.swift */; };
 		D35CFCE01FB0D3FC00C70328 /* NSURLSessionResumeDownloadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35CFCDF1FB0D3FC00C70328 /* NSURLSessionResumeDownloadUITests.swift */; };
+		D35CFCF01FB11E6D00C70328 /* MonitorFile.m in Sources */ = {isa = PBXBuildFile; fileRef = D35CFCEF1FB11E6C00C70328 /* MonitorFile.m */; };
+		D3B566671FB595610097D1ED /* ResumeWithRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B566661FB595610097D1ED /* ResumeWithRange.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,10 @@
 		D35CFCDB1FB0D3FC00C70328 /* NSURLSessionResumeDownloadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NSURLSessionResumeDownloadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D35CFCDF1FB0D3FC00C70328 /* NSURLSessionResumeDownloadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSURLSessionResumeDownloadUITests.swift; sourceTree = "<group>"; };
 		D35CFCE11FB0D3FC00C70328 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D35CFCED1FB11E6C00C70328 /* NSURLSessionResumeDownload-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionResumeDownload-Bridging-Header.h"; sourceTree = "<group>"; };
+		D35CFCEE1FB11E6C00C70328 /* MonitorFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonitorFile.h; sourceTree = "<group>"; };
+		D35CFCEF1FB11E6C00C70328 /* MonitorFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonitorFile.m; sourceTree = "<group>"; };
+		D3B566661FB595610097D1ED /* ResumeWithRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResumeWithRange.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,12 +106,16 @@
 			isa = PBXGroup;
 			children = (
 				D35CFCBC1FB0D3FB00C70328 /* AppDelegate.swift */,
+				D35CFCEE1FB11E6C00C70328 /* MonitorFile.h */,
+				D35CFCEF1FB11E6C00C70328 /* MonitorFile.m */,
 				D35CFCBE1FB0D3FB00C70328 /* ViewController.swift */,
 				D35CFCC01FB0D3FB00C70328 /* Main.storyboard */,
 				D35CFCC61FB0D3FB00C70328 /* Assets.xcassets */,
 				D35CFCC81FB0D3FB00C70328 /* LaunchScreen.storyboard */,
 				D35CFCCB1FB0D3FB00C70328 /* Info.plist */,
 				D35CFCC31FB0D3FB00C70328 /* NSURLSessionResumeDownload.xcdatamodeld */,
+				D35CFCED1FB11E6C00C70328 /* NSURLSessionResumeDownload-Bridging-Header.h */,
+				D3B566661FB595610097D1ED /* ResumeWithRange.swift */,
 			);
 			path = NSURLSessionResumeDownload;
 			sourceTree = "<group>";
@@ -196,6 +206,7 @@
 				TargetAttributes = {
 					D35CFCB81FB0D3FB00C70328 = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 					D35CFCCF1FB0D3FC00C70328 = {
@@ -262,7 +273,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D35CFCF01FB11E6D00C70328 /* MonitorFile.m in Sources */,
 				D35CFCC51FB0D3FB00C70328 /* NSURLSessionResumeDownload.xcdatamodeld in Sources */,
+				D3B566671FB595610097D1ED /* ResumeWithRange.swift in Sources */,
 				D35CFCBF1FB0D3FB00C70328 /* ViewController.swift in Sources */,
 				D35CFCBD1FB0D3FB00C70328 /* AppDelegate.swift in Sources */,
 			);
@@ -430,11 +443,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = NSURLSessionResumeDownload/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = iffk.cdit.NSURLSessionResumeDownload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NSURLSessionResumeDownload/NSURLSessionResumeDownload-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -444,11 +460,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = NSURLSessionResumeDownload/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = iffk.cdit.NSURLSessionResumeDownload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "NSURLSessionResumeDownload/NSURLSessionResumeDownload-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
