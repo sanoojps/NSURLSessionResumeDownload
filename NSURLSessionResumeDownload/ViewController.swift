@@ -19,13 +19,26 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
     var session :URLSession? = nil
     var task :URLSessionDownloadTask? = nil
     
-    var resumableData : Data? = nil
+    var resumableData : Data?
+    {
+        get
+        {
+            return UserDefaults.standard.data(forKey: self.urlString)
+        }
+        set(newValue)
+        {
+            UserDefaults.standard.set(newValue, forKey: self.urlString)
+        }
+    }
     
     var totalBytesExpectedToWrite:Int64 = 0
     var totalBytesWritten :Int64 = 0
     
     let operationQueue =
     OperationQueue.init()
+    
+    var urlString  =
+    "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg"
     
     @IBAction func start(_ sender: UIButton) {
     
@@ -34,9 +47,22 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
             self.progress.setProgress(0, animated: true)
         }
         
-        
-        self.task =
+    
+        //check if userdefaulst hold data
+        if let resumeData = self.resumableData
+        {
+            self.task =
+            self.session?.downloadTask(withResumeData: resumeData)
+        }
+        else
+        {
+            self.task =
             self.session?.downloadTask(with: URL.init(string: "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg")!)
+        }
+        
+            
+    
+        
         
         self.task?.resume()
     
@@ -44,18 +70,19 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
     
     @IBAction func stop(_ sender: UIButton) {
         
-//        self.task?.cancel(byProducingResumeData: { (data:Data?) in
-//
-//            if let data = data
-//            {
-//                self.resumableData =
-//                ///Data.init(referencing: data as NSData)
-//                data
-//            }
-//        })
+        self.task?.cancel(byProducingResumeData: { (data:Data?) in
+
+            if let data = data
+            {
+                self.resumableData =
+                ///Data.init(referencing: data as NSData)
+                data
+
+            }
+        })
 
         
-        self.task?.cancel()
+        //self.task?.cancel()
     }
     
     @IBOutlet weak var progress: UIProgressView!
@@ -107,7 +134,7 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
 //
 //        fileMonSource.resume()
         
-        /*
+        
         
         let moniotr =
             MonitorFile()
@@ -146,13 +173,26 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         let url = URL(string: urlString)
         self.session =
             add(delegate: self)
-        self.task = session?.downloadTask(with: url!)
-        //tmp file gets created here
+        
+        //try resuming from userdefaults
+        
+        if let resumableData: Data =
+            UserDefaults.standard.data(forKey: self.urlString)
+        {
+            self.task =
+            session?.downloadTask(withResumeData: resumableData)
+        }
+        else
+        {
+            self.task = session?.downloadTask(with: url!)
+            //tmp file gets created here
+        }
+     
         
         
         task?.resume()
         
-        */
+        
     
     }
     
@@ -220,6 +260,12 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
             data
         }
         
+        if error == nil
+        {
+            //clear userdefaults
+            self.resumableData = nil
+            
+        }
         
         print("paused \(resumeData?.count ?? 0)")
         

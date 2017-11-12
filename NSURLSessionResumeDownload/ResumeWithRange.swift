@@ -175,7 +175,7 @@ func prepareResumeHeaders(
 
 func makeChunks(contentLength:String) -> [Range<Int32>]
 {
-    let defaultChunkSize: Int32 = 10 * 1024 * 1024 //1 MB
+    let defaultChunkSize: Int32 = 1 * 1024 * 1024 //1 MB
     
     let numberFormatter =
         NumberFormatter.init()
@@ -375,7 +375,8 @@ func startDownload(urlString:String = oldU)
                 try? FileManager.default.removeItem(atPath: fileName)
                 
                 try data.write(to: URL.init(fileURLWithPath: fileName))
-            } catch
+            }
+            catch
             {
                 print(error)
             }
