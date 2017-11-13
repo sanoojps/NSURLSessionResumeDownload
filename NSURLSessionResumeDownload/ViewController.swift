@@ -16,6 +16,8 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
     
     var count = 0
     
+    var counter = 0
+    
     var session :URLSession? = nil
     var task :URLSessionDownloadTask? = nil
     
@@ -27,6 +29,41 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         }
         set(newValue)
         {
+            if let data = newValue
+            {
+                let pList = try?
+                PropertyListSerialization.propertyList(
+                    from: data,
+                    options: PropertyListSerialization.ReadOptions.mutableContainersAndLeaves,
+                    format: nil
+                )
+                
+                let docsDir  =
+                    NSSearchPathForDirectoriesInDomains(
+                        FileManager.SearchPathDirectory.documentDirectory,
+                        FileManager.SearchPathDomainMask.userDomainMask,
+                        true
+                        )[0]
+                
+                let fileName = docsDir + "/" + "aaa\(counter).plist"
+                
+                do {
+                    
+                    try? FileManager.default.removeItem(atPath: fileName)
+                    
+                    try data.write(to: URL.init(fileURLWithPath: fileName))
+                    counter+=1
+                }
+                catch
+                {
+                    print(error)
+                }
+                
+                print(pList as Any)
+            }
+            
+            
+            
             UserDefaults.standard.set(newValue, forKey: self.urlString)
         }
     }
@@ -39,6 +76,7 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
     
     var urlString  =
     "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg"
+    //"https://revel-qa-stg.pearson.com/eps/sanvan/api/item/23e423b3-bbfc-4350-86a0-2be28664d34b/1/file/mobile/beebe-ps-10e_Revel_v8.zip"
     
     @IBAction func start(_ sender: UIButton) {
     
@@ -57,7 +95,7 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         else
         {
             self.task =
-            self.session?.downloadTask(with: URL.init(string: "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg")!)
+            self.session?.downloadTask(with: URL.init(string: urlString)!)
         }
         
             
@@ -161,9 +199,9 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         )
         
         
+        /*
         
-        
-        let urlString = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg"
+        //let urlString = "https://download-installer.cdn.mozilla.net/pub/firefox/releases/56.0.2/mac/en-US/Firefox%2056.0.2.dmg"
         
         //let urlString = "https://images5.alphacoders.com/444/444113.jpg"
         
@@ -192,7 +230,7 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         
         task?.resume()
         
-        
+        */
     
     }
     
@@ -220,7 +258,7 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
         let newFile =
             newFiles.subtracting(cacheOfFilesInTmpDirWithTmp);
             
-            print(newFile)
+            print("newFile \(newFile)")
             
         }
     }
@@ -358,6 +396,9 @@ class ViewController: UIViewController , URLSessionDownloadDelegate,FileSystemEv
     
      public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64)
     {
+        print("fileOffset: \(fileOffset)")
+        print("fileOffset expectedTotalBytes : \(expectedTotalBytes)")
+        
         print(#function)
     }
 }

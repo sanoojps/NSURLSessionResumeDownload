@@ -60,6 +60,11 @@ func makeAUrlSessionCall(
     let task = session.dataTask(with: urlRequest) {
         (data:Data?, response:URLResponse?, error:Error?) in
         
+        print("Range \(urlRequest.allHTTPHeaderFields?["Range"] as Any)")
+        print("If-Range \(urlRequest.allHTTPHeaderFields?["If-Range"] as Any)")
+        print("Content-Range \((response as? HTTPURLResponse)?.allHeaderFields["Content-Range"] as Any)")
+        print("Data length \(data?.count as Any)")
+        print("Current Thread \(Thread.current as Any)")
         completionHandler(data,response,error)
         
     }
@@ -209,7 +214,10 @@ func makeChunks(contentLength:String) -> [Range<Int32>]
         let range  =
         Range<Int32>.init(uncheckedBounds: (lower: lowerbounds, upper: upperbounds))
         
-        lowerbounds = upperbounds
+        lowerbounds = upperbounds + 1
+        //+1 as http range hedaer 0.499 == 500 .both limits are included
+        //but Swift Range does not include upper bounds
+        //Stupid mE!
         
         ranges.append(range)
     }
@@ -255,7 +263,7 @@ func makeTheRangedGetRequest(
     "https://www.hdwallpapers.in/download/skull_and_bones_e3_2017_4k_8k-7680x4320.jpg"
     
     
-func startDownload(urlString:String = oldU)
+func startDownload(urlString:String = firefoxURLString)
 {
     getEtag(urlString: urlString) { (params:(etag:String?,lastMod:String?,contentLength:String)?) in
         
@@ -350,10 +358,8 @@ func startDownload(urlString:String = oldU)
                 true
                 )[0]
             
-            let fileName = docsDir + "/" + "aaa.jpg"
-            
-
-            
+            let fileName = docsDir + "/" + (urlString as NSString).lastPathComponent
+    
             dataChunks.sort(
                 by: { (lhs:DownloadObject, rhs:DownloadObject) -> Bool in
                 
