@@ -248,6 +248,11 @@ func makeTheRangedGetRequest(
     {
         let range: Range<Int32>
         let data: Data
+        //i hold the data dowloaded
+        //here
+        //ideally this could be written out to a file
+        //and a reference to that tmp file path
+        //should be used
         
         init(data:Data,range:Range<Int32>)
         {
@@ -263,7 +268,7 @@ func makeTheRangedGetRequest(
     "https://www.hdwallpapers.in/download/skull_and_bones_e3_2017_4k_8k-7680x4320.jpg"
     
     
-func startDownload(urlString:String = firefoxURLString)
+    func startDownload(urlString:String = firefoxURLString,completion:@escaping ([Range<Int32>])->())
 {
     getEtag(urlString: urlString) { (params:(etag:String?,lastMod:String?,contentLength:String)?) in
         
@@ -284,8 +289,8 @@ func startDownload(urlString:String = firefoxURLString)
         var lastActiveRange:Range<Int32> =
             defaultRange
         
-        var failedRange:Range<Int32> =
-        defaultRange
+        var failedRanges:[Range<Int32>] =
+        []
         
         let dispatchGroup = DispatchGroup()
         
@@ -337,10 +342,13 @@ func startDownload(urlString:String = firefoxURLString)
                         print(response as? HTTPURLResponse as Any)
                         print(error as Any)
                         
-                        failedRange =
-                        range
-                        
-                        print(failedRange)
+                        //light sync
+                        //this var might be accessed from multiple threads
+                        DispatchQueue.main.async {
+                            failedRanges.append(range)
+                        }
+
+                        //print(failedRanges)
                     }
                     
                     dispatchGroup.leave()
@@ -360,6 +368,9 @@ func startDownload(urlString:String = firefoxURLString)
             
             let fileName = docsDir + "/" + (urlString as NSString).lastPathComponent
     
+            
+            //as download happens parallelly
+            // you woulnd't know whihc cunk finished first
             dataChunks.sort(
                 by: { (lhs:DownloadObject, rhs:DownloadObject) -> Bool in
                 
@@ -371,6 +382,7 @@ func startDownload(urlString:String = firefoxURLString)
                 return false
             })
             
+            //combine
             var data:Data =  Data()
             dataChunks.forEach({ (chunk:DownloadObject) in
                 data.append(chunk.data)
@@ -381,11 +393,15 @@ func startDownload(urlString:String = firefoxURLString)
                 try? FileManager.default.removeItem(atPath: fileName)
                 
                 try data.write(to: URL.init(fileURLWithPath: fileName))
+                
+                //data should be made nil here
             }
             catch
             {
                 print(error)
             }
+            
+            completion(failedRanges)
             
         })
         
